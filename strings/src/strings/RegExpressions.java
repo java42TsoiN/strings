@@ -32,4 +32,26 @@ public class RegExpressions {
 //		return "\\s*\\d+(\\s*[+*/-]\\s*\\d+)*\\s*";
 		return String.format("%1$s%2$s(%1$s%3$s%1$s%2$s)*%1$s", delimiter,operand,operator);
 	}
+	/**
+	 * 
+	 * @return regex for mobile Israel phone
+	 * Israel code optional +972 (if the code specified, operator code should be with no 0)
+	 * operator code: 050-059 , 072-077
+	 * 7 digits that may or may not be separated by dash
+	 */
+	public static String mobileIsraelPhone() {
+		String delimiter = "[\\s-]*";
+		String num = "\\d";
+		String code = "\\+972[\\s-]*5\\d|\\+972[\\s-]*7[2-7]|05\\d|07[2-7]";
+		return String.format("(%1$s%2$s)((%3$s%2$s){7})",code,delimiter,num);
+	}
+	/**
+	 * 
+	 * @return regex for IpV4
+	 * contains four parts separated by dot
+	 * each part is the  regex of String ipV4Part()
+	 */
+	public static String ipV4() {
+		return String.format("((%1$s)(\\.)){3}(%1$s)$",ipV4Part()) ;
+	}
 }

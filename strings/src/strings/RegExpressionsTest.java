@@ -82,5 +82,80 @@ class RegExpressionsTest {
 		assertFalse(" 20+&".matches(arithmeticExpression()));
 		assertFalse(" +20".matches(arithmeticExpression()));
 	}
+	@Test
+	void ipV4PartsTrueTest() {
+		assertTrue("000.000.000.000".matches(ipV4()));
+		assertTrue("1.2.3.4".matches(ipV4()));
+		assertTrue("255.255.255.255".matches(ipV4()));
+		assertTrue("190.20.03.004".matches(ipV4()));
+		
+	}
+	@Test
+	void ipV4PartsFalseTest() {
+		
+		assertFalse("000.000.000.000.".matches(ipV4()));
+		assertFalse("000.000.".matches(ipV4()));
+		assertFalse("...".matches(ipV4()));
+		assertFalse(".100.200.".matches(ipV4()));
+		assertFalse("255,255,255,255".matches(ipV4()));
+	}
+	@Test
+	void mobileIsraelTrueTest() {
+		//Israel code optional +972
+		//code operator 050, 051, 052, 053, 054, 055,056,057,058, 059
+		//code operator 072 - 077
+		//7 digits that may or may not be separated by dash
+		assertTrue("+972-541234567".matches(mobileIsraelPhone()));
+		assertTrue("0541234567".matches(mobileIsraelPhone()));
+		assertTrue("074-1-2345-67".matches(mobileIsraelPhone()));
+		assertTrue("+972541234567".matches(mobileIsraelPhone()));
+		assertTrue("+972  541234567".matches(mobileIsraelPhone()));
+	}
+	@Test
+	void mobileIsraelFalseTest() {
+		//Israel code optional +972
+		//code operator 050, 051, 052, 053, 054, 055,056,057,058, 059
+		//code operator 072 - 077
+		//7 digits that may or may not be separated by dash
+		
+		assertFalse("+972-0541234567".matches(mobileIsraelPhone()));
+		assertFalse("+9720541234567".matches(mobileIsraelPhone()));
+		assertFalse("972-541234567".matches(mobileIsraelPhone()));
+		assertFalse("0641234567".matches(mobileIsraelPhone()));
+		assertFalse("+972-54123v567".matches(mobileIsraelPhone()));
+	}
+	@Test 
+	void replaceAllTest() {
+		String expr = " 20 +10 * 2	/	100 +4     ";
+		String actual = getStringWithoutSpaces(expr);
+		String expected = "20+10*2/100+4";
+		assertEquals(expected, actual);
+		
+	}
+
+	private String getStringWithoutSpaces(String str) {
+		String regex = "\\s+";
+		return str.replaceAll(regex, "");
+	}
+	@Test
+	void splitTest () {
+		String expr = " 20 +10 * 2	/100 +4     ";
+		String [] operatorsExp = {"", "+", "*", "/", "+"};
+		assertArrayEquals(operatorsExp, getOperatorsExpression(expr));
+		String [] operandsExp = {"20", "10", "2", "100", "4"};
+		assertArrayEquals(operandsExp, getOperandsExpression(expr));
+	}
+
+	private String[] getOperandsExpression(String expr) {
+//		expr = expr.trim();
+//		return expr.split("\\D+");
+		String  regex = "[+*/-]";
+		String str = getStringWithoutSpaces(expr);
+		return str.split(regex);
+	}
+
+	private String[] getOperatorsExpression(String expr) {
+		return expr.split("[\\d\\s]+");
+	}
 
 }
